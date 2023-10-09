@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import PixelCanvas from "../PixelCanvas";
 
 const WIDTH = 320;
@@ -11,18 +11,18 @@ const FireCanvas = () => {
       imageData.data[offset] = 255;
       imageData.data[offset + 3] = 255;
     }
-
-    // console.log("Pixels Updated");
     return imageData;
   }
 
   return (
-    <PixelCanvas
-      id={"firecanvas"}
-      width={WIDTH}
-      height={HEIGHT}
-      updatePixels={updatePixels}
-    />
+    <>
+      <PixelCanvas
+        id={"firecanvas"}
+        width={WIDTH}
+        height={HEIGHT}
+        updatePixels={updatePixels}
+      />
+    </>
   );
 };
 

@@ -12,20 +12,21 @@ const PixelCanvas = ({ id, width, height, updatePixels }: CanvasProps) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvas?.getContext("2d", { willReadFrequently: true });
     let animationFrameId: number;
 
     if (ctx) {
-      const imageData = ctx.createImageData(width, height);
-
       const render = () => {
-        ctx.putImageData(updatePixels(imageData), 0, 0);
+        ctx.putImageData(
+          updatePixels(ctx.getImageData(0, 0, width, height)),
+          0,
+          0,
+        );
         animationFrameId = window.requestAnimationFrame(render);
       };
 
       render();
     }
-
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
