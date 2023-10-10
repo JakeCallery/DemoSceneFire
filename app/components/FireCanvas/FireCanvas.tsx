@@ -2,27 +2,44 @@
 import React from "react";
 import PixelCanvas from "../PixelCanvas";
 
-const WIDTH = 320;
-const HEIGHT = 240;
+interface FireCanvasProps {
+  width: number;
+  height: number;
+  palette: Uint8ClampedArray;
+}
 
-const FireCanvas = () => {
+const NUM_PALETTE_COLOR_BYTES = 3;
+const NUM_DATA_COLOR_BYTES = 4;
+
+const FireCanvas = ({ width, height, palette }: FireCanvasProps) => {
   function updatePixels(imageData: ImageData) {
-    for (let offset = 0; offset < WIDTH * 4; offset += 4) {
-      imageData.data[offset] = 255;
-      imageData.data[offset + 3] = 255;
+    const paletteColors = palette.length / NUM_PALETTE_COLOR_BYTES;
+    //Just draw the palette for now
+    for (let y = 0; y < palette.length / NUM_PALETTE_COLOR_BYTES; y++) {
+      for (let x = 0; x < width; x++) {
+        const yVal = y * paletteColors * NUM_DATA_COLOR_BYTES;
+        const xVal = x * NUM_DATA_COLOR_BYTES;
+        imageData.data[yVal + xVal] = palette[y * NUM_PALETTE_COLOR_BYTES];
+        imageData.data[yVal + xVal + 1] =
+          palette[y * NUM_PALETTE_COLOR_BYTES + 1];
+        imageData.data[yVal + xVal + 2] =
+          palette[y * NUM_PALETTE_COLOR_BYTES + 2];
+        imageData.data[yVal + xVal + 3] = 255;
+      }
     }
+
     return imageData;
   }
 
   return (
-    <>
+    <div className="flex-row">
       <PixelCanvas
         id={"firecanvas"}
-        width={WIDTH}
-        height={HEIGHT}
+        width={width}
+        height={height}
         updatePixels={updatePixels}
       />
-    </>
+    </div>
   );
 };
 
