@@ -1,16 +1,41 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import PixelCanvas from "../PixelCanvas";
 
 interface FireCanvasProps {
   width: number;
   height: number;
   palette: Uint8ClampedArray;
+  overlayFireData: Uint8ClampedArray;
+  overlayWidth: number;
+  overlayHeight: number;
 }
 
 const NUM_DATA_COLOR_BYTES = 4;
-const FireCanvas = ({ width, height, palette }: FireCanvasProps) => {
+const FireCanvas = ({
+  width,
+  height,
+  palette,
+  overlayFireData,
+  overlayWidth,
+  overlayHeight,
+}: FireCanvasProps) => {
   const fireDataRef = useRef(new Uint8ClampedArray(width * height));
+
+  useEffect(() => {
+    if (!overlayFireData) return;
+    const xOffset = Math.floor(width / 2 - overlayWidth / 2);
+    const yOffset = Math.floor(height - height / 10 - overlayHeight / 2);
+    for (let y = 0; y < overlayHeight; y++) {
+      for (let x = 0; x < overlayWidth; x++) {
+        if (overlayFireData[y * overlayWidth + x] !== 0) {
+          fireDataRef.current[(y + yOffset) * width + (x + xOffset)] =
+            overlayFireData[y * overlayWidth + x];
+        }
+      }
+    }
+  }, [overlayFireData, height, width, overlayWidth, overlayHeight]);
+
   function randomizeFirstRow() {
     const bottomRowOffset = (height - 1) * width;
     for (let xOffset = 0; xOffset < width; xOffset++) {
