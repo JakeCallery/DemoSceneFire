@@ -12,7 +12,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    setPalette(buildPalette(0, 80));
+    setPalette(buildPalette(0, 0));
   }, []);
 
   return (
