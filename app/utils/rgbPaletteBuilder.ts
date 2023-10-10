@@ -1,24 +1,25 @@
 import hslToRgb from "@/app/utils/hslToRgb";
 
-export const NUM_COLORS = 3; //red, green, blue
+export const NUM_BYTES = 3; //red, green, blue
 export function buildPalette(
   hueStart: number,
   hueRange: number,
   paletteSize: number = 256,
+  lightnessPoint: number = 2,
 ) {
-  let palette = new Uint8ClampedArray(paletteSize * NUM_COLORS);
+  let palette = new Uint8ClampedArray(paletteSize * NUM_BYTES);
 
-  const hueStep = hueRange / (palette.length / NUM_COLORS);
+  const hueStep = hueRange / (palette.length / NUM_BYTES);
 
-  for (let i = 0; i < palette.length; i += NUM_COLORS) {
+  for (let i = 0; i < palette.length / NUM_BYTES; i++) {
     const [red, green, blue] = hslToRgb(
-      (hueStart + (i / NUM_COLORS) * hueStep) % 360,
+      ((hueStart + i) * hueStep) % 360,
       100,
-      (i / NUM_COLORS / paletteSize) * 100,
+      Math.min(100, (i / palette.length) * 100 * lightnessPoint),
     );
-    palette[i] = red;
-    palette[i + 1] = green;
-    palette[i + 2] = blue;
+    palette[i * NUM_BYTES] = red;
+    palette[i * NUM_BYTES + 1] = green;
+    palette[i * NUM_BYTES + 2] = blue;
   }
 
   return palette;
