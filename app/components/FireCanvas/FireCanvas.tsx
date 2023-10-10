@@ -1,23 +1,28 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import PixelCanvas from "../PixelCanvas";
+
+const WIDTH = 320;
+const HEIGHT = 240;
 
 const FireCanvas = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas  = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if(ctx) {
-      ctx.fillStyle = "#FF0000";
-      ctx.fillRect(0,0, ctx.canvas.width, ctx.canvas.height);
+  function updatePixels(imageData: ImageData) {
+    for (let offset = 0; offset < WIDTH * 4; offset += 4) {
+      imageData.data[offset] = 255;
+      imageData.data[offset + 3] = 255;
     }
-
-  }, []);
+    return imageData;
+  }
 
   return (
-    <div>
-      <canvas ref={canvasRef} id="firecanvas" width="320" height="240" />
-    </div>
+    <>
+      <PixelCanvas
+        id={"firecanvas"}
+        width={WIDTH}
+        height={HEIGHT}
+        updatePixels={updatePixels}
+      />
+    </>
   );
 };
 
