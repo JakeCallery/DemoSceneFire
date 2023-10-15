@@ -2,6 +2,10 @@
 import React, { useEffect, useRef } from "react";
 import PixelCanvas from "../PixelCanvas";
 
+const FIRE_COOL_MIN = 4.001;
+const FIRE_COOL_MAX = 5.0;
+const FIRE_COOL_RANGE = FIRE_COOL_MAX - FIRE_COOL_MIN;
+
 interface FireCanvasProps {
   width: number;
   height: number;
@@ -11,6 +15,7 @@ interface FireCanvasProps {
   overlayHeight: number;
   fireCenterOffset: number;
   fireWidth: number;
+  fireHeightPercent: number;
 }
 
 const NUM_DATA_COLOR_BYTES = 4;
@@ -23,6 +28,7 @@ const FireCanvas = ({
   overlayHeight,
   fireCenterOffset,
   fireWidth,
+  fireHeightPercent,
 }: FireCanvasProps) => {
   const fireDataRef = useRef(new Uint8ClampedArray(width * height));
 
@@ -68,34 +74,26 @@ const FireCanvas = ({
         const val1 =
           y + 1 >= height || x - 1 < 0
             ? 0
-            : fireDataRef.current[
-                ((y + 1) % height) * width + ((x - 1 + width) % width)
-              ];
+            : fireDataRef.current[(y + 1) * width + x - 1];
 
         //Down 1 Center
         const val2 =
-          y + 1 >= height
-            ? 0
-            : fireDataRef.current[((y + 1) % height) * width + x];
+          y + 1 >= height ? 0 : fireDataRef.current[(y + 1) * width + x];
 
         //Down 1 Right 1
         const val3 =
           x + 1 >= width || y + 1 >= height
             ? 0
-            : fireDataRef.current[
-                ((y + 1) % height) * width + ((x + 1) % width)
-              ];
+            : fireDataRef.current[(y + 1) * width + x + 1];
 
         //Down 2 Center
         const val4 =
-          y + 2 >= height
-            ? 0
-            : fireDataRef.current[(((y + 2) * width) % height) + x];
+          y + 2 >= height ? 0 : fireDataRef.current[(y + 2) * width + x];
 
         const summedValue = val1 + val2 + val3 + val4;
-
         fireDataRef.current[y * width + x] = Math.floor(
-          (summedValue * 60) / 181,
+          summedValue /
+            (FIRE_COOL_MAX - FIRE_COOL_RANGE * (fireHeightPercent / 100)),
         );
       }
     }

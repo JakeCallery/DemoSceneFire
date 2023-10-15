@@ -22,6 +22,8 @@ export default function Home() {
     Math.floor(WIDTH / 2),
   );
 
+  const [fireHeightPercent, setFireHeightPercent] = useState(50);
+
   function onNewFireData(data: Uint8ClampedArray) {
     setNewFireData(data);
   }
@@ -42,6 +44,7 @@ export default function Home() {
         overlayHeight={OVERLAY_HEIGHT}
         fireCenterOffset={fireCenterOffset}
         fireWidth={fireWidth}
+        fireHeightPercent={fireHeightPercent}
       />
       <TextHandler
         onNewFireData={onNewFireData}
@@ -69,6 +72,18 @@ export default function Home() {
         step="1"
         onInput={(e: ChangeEvent<HTMLInputElement>) =>
           setFireCenterOffset(Number(e.target.value))
+        }
+      />
+
+      <input
+        type="range"
+        id="fireheightslider"
+        min={0}
+        max={100}
+        step={1}
+        defaultValue={50}
+        onInput={(e: ChangeEvent<HTMLInputElement>) =>
+          setFireHeightPercent(Number(e.target.value))
         }
       />
     </main>

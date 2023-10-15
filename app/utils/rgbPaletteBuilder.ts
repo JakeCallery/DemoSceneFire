@@ -17,9 +17,9 @@ export function buildPalette(
       100,
       Math.min(100, (i / palette.length) * 100 * lightnessPoint),
     );
-    palette[i * NUM_BYTES] = red;
-    palette[i * NUM_BYTES + 1] = green;
-    palette[i * NUM_BYTES + 2] = blue;
+    palette[i * NUM_BYTES] = i !== 0 ? red : 0;
+    palette[i * NUM_BYTES + 1] = i !== 0 ? green : 0;
+    palette[i * NUM_BYTES + 2] = i !== 0 ? blue : 0;
   }
 
   return palette;
