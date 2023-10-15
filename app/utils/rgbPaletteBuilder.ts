@@ -13,7 +13,7 @@ export function buildPalette(
 
   for (let i = 0; i < palette.length / NUM_BYTES; i++) {
     const [red, green, blue] = hslToRgb(
-      ((hueStart + i) * hueStep) % 360,
+      hueStart + ((i * hueStep) % 360),
       100,
       Math.min(100, (i / palette.length) * 100 * lightnessPoint),
     );

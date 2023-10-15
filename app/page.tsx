@@ -23,14 +23,16 @@ export default function Home() {
   );
 
   const [fireHeightPercent, setFireHeightPercent] = useState(50);
+  const [paletteStart, setPaletteStart] = useState(0);
+  const [paletteRange, setPaletteRange] = useState(60);
 
   function onNewFireData(data: Uint8ClampedArray) {
     setNewFireData(data);
   }
 
   useEffect(() => {
-    setPalette(buildPalette(0, 60, 256, 4));
-  }, []);
+    setPalette(buildPalette(paletteStart, paletteRange, 256, 4));
+  }, [paletteStart, paletteRange]);
 
   useEffect(() => {
     if (fireCenterOffset + Math.ceil(fireWidth / 2) >= WIDTH) {
@@ -91,6 +93,28 @@ export default function Home() {
         defaultValue={50}
         onInput={(e: ChangeEvent<HTMLInputElement>) =>
           setFireHeightPercent(Number(e.target.value))
+        }
+      />
+
+      <input
+        type="range"
+        id="firepalettestart"
+        min={1}
+        max={360}
+        defaultValue={0}
+        onInput={(e: ChangeEvent<HTMLInputElement>) =>
+          setPaletteStart(Number(e.target.value))
+        }
+      />
+
+      <input
+        type="range"
+        id="paletteRange"
+        min={1}
+        max={360}
+        defaultValue={60}
+        onInput={(e: ChangeEvent<HTMLInputElement>) =>
+          setPaletteRange(Number(e.target.value))
         }
       />
     </main>
