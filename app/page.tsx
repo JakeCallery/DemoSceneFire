@@ -1,6 +1,6 @@
 "use client";
 import FireCanvas from "@/app/components/FireCanvas/FireCanvas";
-import { useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 import { buildPalette } from "@/app/utils/rgbPaletteBuilder";
 import TextHandler from "@/app/components/TextHandler";
 
@@ -15,6 +15,11 @@ export default function Home() {
 
   const [newFireData, setNewFireData] = useState(
     new Uint8ClampedArray(50 * 50),
+  );
+
+  const [fireWidth, setFireWidth] = useState(Math.floor(WIDTH / 2));
+  const [fireCenterOffset, setFireCenterOffset] = useState(
+    Math.floor(WIDTH / 2),
   );
 
   function onNewFireData(data: Uint8ClampedArray) {
@@ -35,11 +40,36 @@ export default function Home() {
         overlayFireData={newFireData}
         overlayWidth={OVERLAY_WIDTH}
         overlayHeight={OVERLAY_HEIGHT}
+        fireCenterOffset={fireCenterOffset}
+        fireWidth={fireWidth}
       />
       <TextHandler
         onNewFireData={onNewFireData}
         textWidth={OVERLAY_WIDTH}
         textHeight={OVERLAY_HEIGHT}
+      />
+      <input
+        id="firewidthslider"
+        type="range"
+        min="0"
+        max={WIDTH}
+        step="1"
+        defaultValue={Math.floor(WIDTH / 2)}
+        onInput={(e: ChangeEvent<HTMLInputElement>) =>
+          setFireWidth(Number(e.target.value))
+        }
+      />
+
+      <input
+        id="firecenteroffsetslider"
+        type="range"
+        min={0}
+        max={WIDTH}
+        defaultValue={Math.floor(WIDTH / 2)}
+        step="1"
+        onInput={(e: ChangeEvent<HTMLInputElement>) =>
+          setFireCenterOffset(Number(e.target.value))
+        }
       />
     </main>
   );

@@ -9,6 +9,8 @@ interface FireCanvasProps {
   overlayFireData: Uint8ClampedArray;
   overlayWidth: number;
   overlayHeight: number;
+  fireCenterOffset: number;
+  fireWidth: number;
 }
 
 const NUM_DATA_COLOR_BYTES = 4;
@@ -19,6 +21,8 @@ const FireCanvas = ({
   overlayFireData,
   overlayWidth,
   overlayHeight,
+  fireCenterOffset,
+  fireWidth,
 }: FireCanvasProps) => {
   const fireDataRef = useRef(new Uint8ClampedArray(width * height));
 
@@ -39,9 +43,17 @@ const FireCanvas = ({
   function randomizeFirstRow() {
     const bottomRowOffset = (height - 1) * width;
     for (let xOffset = 0; xOffset < width; xOffset++) {
-      fireDataRef.current[bottomRowOffset + xOffset] = Math.floor(
-        Math.random() * 255,
-      );
+      const halfFireWidth = Math.floor(fireWidth / 2);
+      if (
+        xOffset >= fireCenterOffset - halfFireWidth &&
+        xOffset < fireCenterOffset + halfFireWidth
+      ) {
+        fireDataRef.current[bottomRowOffset + xOffset] = Math.floor(
+          Math.random() * 255,
+        );
+      } else {
+        fireDataRef.current[bottomRowOffset + xOffset] = 0;
+      }
     }
   }
 
