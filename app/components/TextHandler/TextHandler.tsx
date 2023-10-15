@@ -13,6 +13,7 @@ const TextHandler = ({
 }: TextHandlerProps) => {
   const [currentChar, setCurrentChar] = useState("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const onNewFireDataCB = useRef(onNewFireData);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,7 +34,7 @@ const TextHandler = ({
           }
         }
       }
-      onNewFireData(newFireData);
+      onNewFireDataCB.current(newFireData);
     }
   }, [currentChar, textHeight, textWidth]);
 
