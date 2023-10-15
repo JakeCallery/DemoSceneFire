@@ -66,24 +66,36 @@ const FireCanvas = ({
       for (let x = 0; x < width; x++) {
         //Down 1 Left 1
         const val1 =
-          fireDataRef.current[
-            ((y + 1) % height) * width + ((x - 1 + width) % width)
-          ];
+          y + 1 >= height || x - 1 < 0
+            ? 0
+            : fireDataRef.current[
+                ((y + 1) % height) * width + ((x - 1 + width) % width)
+              ];
 
         //Down 1 Center
-        const val2 = fireDataRef.current[((y + 1) % height) * width + x];
+        const val2 =
+          y + 1 >= height
+            ? 0
+            : fireDataRef.current[((y + 1) % height) * width + x];
 
         //Down 1 Right 1
         const val3 =
-          fireDataRef.current[((y + 1) % height) * width + ((x + 1) % width)];
+          x + 1 >= width || y + 1 >= height
+            ? 0
+            : fireDataRef.current[
+                ((y + 1) % height) * width + ((x + 1) % width)
+              ];
 
         //Down 2 Center
-        const val4 = fireDataRef.current[(((y + 2) * width) % height) + x];
+        const val4 =
+          y + 2 >= height
+            ? 0
+            : fireDataRef.current[(((y + 2) * width) % height) + x];
 
         const summedValue = val1 + val2 + val3 + val4;
 
         fireDataRef.current[y * width + x] = Math.floor(
-          (summedValue * 600) / 1801,
+          (summedValue * 60) / 181,
         );
       }
     }
