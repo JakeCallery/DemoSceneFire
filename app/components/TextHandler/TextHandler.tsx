@@ -12,12 +12,16 @@ interface TextHandlerProps {
   onNewMessage: (message: string) => void;
   mainCanvasWidth: number;
   mainCanvasHeight: number;
+  maxChars: number;
 }
 
 const TextHandler = ({
   onNewFireData,
   wordList,
   onNewMessage,
+  mainCanvasWidth,
+  mainCanvasHeight,
+  maxChars,
 }: TextHandlerProps) => {
   const [shortMessage, setShortMessage] = useState("");
   const [currentWordList, setCurrentWordList] = useState<string[]>([]);
@@ -52,11 +56,17 @@ const TextHandler = ({
   function renderWord(word: string) {
     if (!canvasRef!.current || !word) return;
 
-    const letterWidth = Math.min(Math.ceil(320 / word.length), 240); //TODO: Pass in canvas width
-    const letterHeight = Math.min(Math.ceil(320 / word.length), 240); //TODO: make this smarter
+    const letterWidth = Math.min(
+      Math.ceil(mainCanvasWidth / word.length),
+      mainCanvasHeight,
+    );
+    const letterHeight = Math.min(
+      Math.ceil(mainCanvasWidth / word.length),
+      mainCanvasHeight,
+    );
 
     const canvas = canvasRef.current;
-    canvas.width = 320; //TODO: Pass in canvas width
+    canvas.width = mainCanvasWidth;
     canvas.height = letterHeight;
 
     const ctx = canvasRef.current.getContext("2d", {
@@ -109,7 +119,7 @@ const TextHandler = ({
         value={shortMessage}
         onChange={onChange}
         required
-        maxLength={25}
+        maxLength={maxChars}
       ></input>
       <button
         className="btn btn-primary"

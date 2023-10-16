@@ -10,6 +10,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 const WIDTH = 320;
 const HEIGHT = 240;
 const UPDATE_INTERVAL_MS = 250;
+const MAX_WORDS = 20;
+const MAX_CHARS = 140;
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,9 +39,9 @@ export default function Home() {
     searchParams.get("rj") === "true" || false,
   );
   const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
-  // const [wordList, setWordList] = useState(["1", "2", "3", "4", "5"]);
-  // const [currentWord, setCurrentWord] = useState("test");
-  const [wordList, setWordList] = useState<string[]>([]);
+  const [wordList, setWordList] = useState<string[]>(
+    searchParams.get("fm")?.split(" ", MAX_WORDS) || [],
+  );
   const lastUpdateTimeRef = useRef(performance.now());
   const timerRef = useRef<NodeJS.Timeout>();
 
@@ -95,7 +97,8 @@ export default function Home() {
   }
 
   function onNewMessage(message: string) {
-    setWordList(message.split(" ", 10));
+    setWordList(message.split(" ", MAX_WORDS));
+    setFireMessage(message);
   }
 
   return (
@@ -123,6 +126,7 @@ export default function Home() {
         onNewMessage={onNewMessage}
         mainCanvasWidth={WIDTH}
         mainCanvasHeight={HEIGHT}
+        maxChars={MAX_CHARS}
       />
       <input
         id="firewidthslider"
