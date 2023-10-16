@@ -5,6 +5,7 @@ import { buildPalette } from "@/app/utils/rgbPaletteBuilder";
 import TextHandler from "@/app/components/TextHandler";
 import { OverlayDataObj } from "@/app/interfaces/interfaces";
 import JackOLantern from "@/app/components/JackOLantern";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -16,14 +17,17 @@ export default function Home() {
 
   const [newFireData, setNewFireData] = useState<OverlayDataObj | null>(null);
 
-  const [fireWidth, setFireWidth] = useState(Math.floor(WIDTH / 2));
-  const [fireCenterOffset, setFireCenterOffset] = useState(
-    Math.floor(WIDTH / 2),
-  );
-
   const [fireHeightPercent, setFireHeightPercent] = useState(50);
   const [paletteStart, setPaletteStart] = useState(0);
   const [paletteRange, setPaletteRange] = useState(60);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const renderJack = searchParams.get("rj") === "true" || false;
+  const fireWidth = Number(searchParams.get("fw")) || Math.floor(WIDTH / 2);
+  const fireCenterOffset =
+    Number(searchParams.get("co")) || Math.floor(WIDTH / 2);
 
   function onNewFireData(
     data: Uint8ClampedArray,
@@ -47,9 +51,21 @@ export default function Home() {
 
   useEffect(() => {
     if (fireCenterOffset + Math.ceil(fireWidth / 2) >= WIDTH) {
-      setFireCenterOffset(WIDTH - Math.floor(fireWidth / 2));
+      // setFireCenterOffset(WIDTH - Math.floor(fireWidth / 2));
+      updateSearchParam("co", (WIDTH - Math.floor(fireWidth / 2)).toString());
     }
   }, [fireCenterOffset, fireWidth]);
+
+  function onRenderJackCBChange(e: ChangeEvent<HTMLInputElement>) {
+    updateSearchParam("rj", e.target.checked.toString());
+  }
+
+  function updateSearchParam(key: string, value: string) {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set(key, value);
+    const newString = current.toString();
+    router.replace(`?${newString}`);
+  }
 
   return (
     <main>
@@ -67,6 +83,8 @@ export default function Home() {
         width={WIDTH}
         height={HEIGHT}
         onNewFireData={onNewFireData}
+        renderJack={renderJack}
+        onRenderJackCBChange={onRenderJackCBChange}
       />
       <TextHandler onNewFireData={onNewFireData} />
       <input
@@ -77,7 +95,7 @@ export default function Home() {
         step="1"
         defaultValue={Math.floor(WIDTH / 2)}
         onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          setFireWidth(Number(e.target.value))
+          updateSearchParam("fw", e.target.value.toString())
         }
       />
 
@@ -89,7 +107,7 @@ export default function Home() {
         step="1"
         value={fireCenterOffset}
         onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          setFireCenterOffset(Number(e.target.value))
+          updateSearchParam("co", e.target.value.toString())
         }
         disabled={WIDTH === fireWidth}
       />

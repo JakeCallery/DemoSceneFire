@@ -5,6 +5,8 @@ const JackOLantern = ({
   width,
   height,
   onNewFireData,
+  renderJack,
+  onRenderJackCBChange,
 }: {
   width: number;
   height: number;
@@ -15,10 +17,11 @@ const JackOLantern = ({
     contentWidth: number,
     contentHeight: number,
   ) => void;
+  renderJack: boolean;
+  onRenderJackCBChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>();
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [renderJack, setRenderJack] = useState(false);
 
   const onNewFireDataCB = useRef(onNewFireData);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -36,6 +39,11 @@ const JackOLantern = ({
       if (imgRef.current?.complete) setImageLoaded(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!renderJack && animationFrameIdRef.current)
+      window.cancelAnimationFrame(animationFrameIdRef.current);
+  }, [renderJack]);
 
   useEffect(() => {
     if (!imageLoaded) return;
@@ -103,10 +111,10 @@ const JackOLantern = ({
   }
 
   function onCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
-    setRenderJack(e.target.checked);
     if (!e.target.checked) {
       window.cancelAnimationFrame(animationFrameIdRef.current);
     }
+    onRenderJackCBChange(e);
   }
 
   return (
