@@ -9,6 +9,7 @@ interface CanvasProps {
 
 const PixelCanvas = ({ id, width, height, updatePixels }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastTimeStampRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,16 +17,20 @@ const PixelCanvas = ({ id, width, height, updatePixels }: CanvasProps) => {
     let animationFrameId: number;
 
     if (ctx) {
-      const render = () => {
-        ctx.putImageData(
-          updatePixels(ctx.getImageData(0, 0, width, height)),
-          0,
-          0,
-        );
-        animationFrameId = window.requestAnimationFrame(render);
+      const render = (timeStamp: number) => {
+        if (timeStamp - lastTimeStampRef.current > 16) {
+          ctx.putImageData(
+            updatePixels(ctx.getImageData(0, 0, width, height)),
+            0,
+            0,
+          );
+          lastTimeStampRef.current = timeStamp;
+          animationFrameId = window.requestAnimationFrame(render);
+        } else {
+          animationFrameId = window.requestAnimationFrame(render);
+        }
       };
-
-      render();
+      render(performance.now());
     }
     return () => {
       window.cancelAnimationFrame(animationFrameId);

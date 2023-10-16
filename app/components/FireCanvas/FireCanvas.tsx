@@ -1,22 +1,65 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import PixelCanvas from "../PixelCanvas";
+import { OverlayDataObj } from "@/app/interfaces/interfaces";
+
+const FIRE_COOL_MIN = 4.001;
+const FIRE_COOL_MAX = 5.0;
+const FIRE_COOL_RANGE = FIRE_COOL_MAX - FIRE_COOL_MIN;
 
 interface FireCanvasProps {
   width: number;
   height: number;
   palette: Uint8ClampedArray;
+  overlayFireData: OverlayDataObj | null;
+  fireCenterOffset: number;
+  fireWidth: number;
+  fireHeightPercent: number;
 }
 
 const NUM_DATA_COLOR_BYTES = 4;
-const FireCanvas = ({ width, height, palette }: FireCanvasProps) => {
+const FireCanvas = ({
+  width,
+  height,
+  palette,
+  overlayFireData,
+  fireCenterOffset,
+  fireWidth,
+  fireHeightPercent,
+}: FireCanvasProps) => {
   const fireDataRef = useRef(new Uint8ClampedArray(width * height));
+
+  useEffect(() => {
+    if (!overlayFireData || !overlayFireData.data) return;
+    const overlayWidth = overlayFireData.dataWidth;
+    const overlayHeight = overlayFireData.dataHeight;
+    const xOffset = Math.floor(width / 2 - overlayFireData.contentWidth / 2);
+    const yOffset = Math.floor(height / 2 - overlayFireData.contentHeight / 2);
+
+    for (let y = 0; y < overlayHeight; y++) {
+      for (let x = 0; x < overlayWidth; x++) {
+        if (overlayFireData.data[y * overlayWidth + x] !== 0) {
+          fireDataRef.current[(y + yOffset) * width + (x + xOffset)] =
+            overlayFireData.data[y * overlayWidth + x];
+        }
+      }
+    }
+  }, [overlayFireData, height, width]);
+
   function randomizeFirstRow() {
     const bottomRowOffset = (height - 1) * width;
     for (let xOffset = 0; xOffset < width; xOffset++) {
-      fireDataRef.current[bottomRowOffset + xOffset] = Math.floor(
-        Math.random() * 255,
-      );
+      const halfFireWidth = Math.floor(fireWidth / 2);
+      if (
+        xOffset >= fireCenterOffset - halfFireWidth &&
+        xOffset < fireCenterOffset + halfFireWidth
+      ) {
+        fireDataRef.current[bottomRowOffset + xOffset] = Math.floor(
+          Math.random() * 255,
+        );
+      } else {
+        fireDataRef.current[bottomRowOffset + xOffset] = 0;
+      }
     }
   }
 
@@ -29,24 +72,28 @@ const FireCanvas = ({ width, height, palette }: FireCanvasProps) => {
       for (let x = 0; x < width; x++) {
         //Down 1 Left 1
         const val1 =
-          fireDataRef.current[
-            ((y + 1) % height) * width + ((x - 1 + width) % width)
-          ];
+          y + 1 >= height || x - 1 < 0
+            ? 0
+            : fireDataRef.current[(y + 1) * width + x - 1];
 
         //Down 1 Center
-        const val2 = fireDataRef.current[((y + 1) % height) * width + x];
+        const val2 =
+          y + 1 >= height ? 0 : fireDataRef.current[(y + 1) * width + x];
 
         //Down 1 Right 1
         const val3 =
-          fireDataRef.current[((y + 1) % height) * width + ((x + 1) % width)];
+          x + 1 >= width || y + 1 >= height
+            ? 0
+            : fireDataRef.current[(y + 1) * width + x + 1];
 
         //Down 2 Center
-        const val4 = fireDataRef.current[(((y + 2) * width) % height) + x];
+        const val4 =
+          y + 2 >= height ? 0 : fireDataRef.current[(y + 2) * width + x];
 
         const summedValue = val1 + val2 + val3 + val4;
-
         fireDataRef.current[y * width + x] = Math.floor(
-          (summedValue * 600) / 1801,
+          summedValue /
+            (FIRE_COOL_MAX - FIRE_COOL_RANGE * (fireHeightPercent / 100)),
         );
       }
     }
