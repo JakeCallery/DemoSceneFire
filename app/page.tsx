@@ -1,6 +1,6 @@
 "use client";
 import FireCanvas from "@/app/components/FireCanvas/FireCanvas";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { buildPalette } from "@/app/utils/rgbPaletteBuilder";
 import TextHandler from "@/app/components/TextHandler";
 import { OverlayDataObj } from "@/app/interfaces/interfaces";
@@ -9,25 +9,37 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const WIDTH = 320;
 const HEIGHT = 240;
-
+const UPDATE_INTERVAL_MS = 250;
 export default function Home() {
-  const [palette, setPalette] = useState<Uint8ClampedArray>(
-    new Uint8ClampedArray(1),
-  );
-
-  const [newFireData, setNewFireData] = useState<OverlayDataObj | null>(null);
-
-  const [fireHeightPercent, setFireHeightPercent] = useState(50);
-  const [paletteStart, setPaletteStart] = useState(0);
-  const [paletteRange, setPaletteRange] = useState(60);
-
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const renderJack = searchParams.get("rj") === "true" || false;
-  const fireWidth = Number(searchParams.get("fw")) || Math.floor(WIDTH / 2);
-  const fireCenterOffset =
-    Number(searchParams.get("co")) || Math.floor(WIDTH / 2);
+  const [palette, setPalette] = useState<Uint8ClampedArray>(
+    new Uint8ClampedArray(1),
+  );
+  const [newFireData, setNewFireData] = useState<OverlayDataObj | null>(null);
+  const [fireWidth, setFireWidth] = useState(
+    Math.min(Number(searchParams.get("fw")) || Math.floor(WIDTH / 2), WIDTH),
+  );
+  const [fireCenterOffset, setFireCenterOffset] = useState(
+    Math.min(Number(searchParams.get("co")) || Math.floor(WIDTH / 2), WIDTH),
+  );
+  const [fireHeightPercent, setFireHeightPercent] = useState(
+    Math.min(Number(searchParams.get("hp")) || 50, 100),
+  );
+  const [paletteStart, setPaletteStart] = useState(
+    Math.min(Number(searchParams.get("ps")) || 0, 360),
+  );
+  const [paletteRange, setPaletteRange] = useState(
+    Math.min(Number(searchParams.get("pr")) || 60, 360),
+  );
+  const [renderJack, setRenderJack] = useState(
+    searchParams.get("rj") === "true" || false,
+  );
+  const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
+
+  const lastUpdateTimeRef = useRef(performance.now());
+  const timerRef = useRef<NodeJS.Timeout>();
 
   function onNewFireData(
     data: Uint8ClampedArray,
@@ -46,25 +58,38 @@ export default function Home() {
   }
 
   useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      if (lastUpdateTimeRef.current + UPDATE_INTERVAL_MS <= performance.now()) {
+        router.replace(
+          `?fw=${fireWidth}&co=${fireCenterOffset}&hp=${fireHeightPercent}&ps=${paletteStart}&pr=${paletteRange}&rj=${renderJack}&fm=${fireMessage}`,
+        );
+      }
+    }, UPDATE_INTERVAL_MS);
+
+    return () => clearTimeout(timerRef.current);
+  }, [
+    router,
+    fireWidth,
+    fireCenterOffset,
+    fireHeightPercent,
+    paletteStart,
+    paletteRange,
+    renderJack,
+    fireMessage,
+  ]);
+
+  useEffect(() => {
     setPalette(buildPalette(paletteStart, paletteRange, 256, 4));
   }, [paletteStart, paletteRange]);
 
   useEffect(() => {
     if (fireCenterOffset + Math.ceil(fireWidth / 2) >= WIDTH) {
-      // setFireCenterOffset(WIDTH - Math.floor(fireWidth / 2));
-      updateSearchParam("co", (WIDTH - Math.floor(fireWidth / 2)).toString());
+      setFireCenterOffset(WIDTH - Math.floor(fireWidth / 2));
     }
   }, [fireCenterOffset, fireWidth]);
 
   function onRenderJackCBChange(e: ChangeEvent<HTMLInputElement>) {
-    updateSearchParam("rj", e.target.checked.toString());
-  }
-
-  function updateSearchParam(key: string, value: string) {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set(key, value);
-    const newString = current.toString();
-    router.replace(`?${newString}`);
+    setRenderJack(e.target.checked);
   }
 
   return (
@@ -93,10 +118,11 @@ export default function Home() {
         min="0"
         max={WIDTH}
         step="1"
-        defaultValue={Math.floor(WIDTH / 2)}
-        onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          updateSearchParam("fw", e.target.value.toString())
-        }
+        value={fireWidth}
+        onInput={(e: ChangeEvent<HTMLInputElement>) => {
+          setFireWidth(Number(e.target.value));
+          lastUpdateTimeRef.current = performance.now();
+        }}
       />
 
       <input
@@ -106,9 +132,10 @@ export default function Home() {
         max={WIDTH - Math.floor(fireWidth / 2)}
         step="1"
         value={fireCenterOffset}
-        onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          updateSearchParam("co", e.target.value.toString())
-        }
+        onInput={(e: ChangeEvent<HTMLInputElement>) => {
+          setFireCenterOffset(Number(e.target.value));
+          lastUpdateTimeRef.current = performance.now();
+        }}
         disabled={WIDTH === fireWidth}
       />
 
@@ -118,10 +145,11 @@ export default function Home() {
         min={0}
         max={100}
         step={1}
-        defaultValue={50}
-        onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          setFireHeightPercent(Number(e.target.value))
-        }
+        value={fireHeightPercent}
+        onInput={(e: ChangeEvent<HTMLInputElement>) => {
+          setFireHeightPercent(Number(e.target.value));
+          lastUpdateTimeRef.current = performance.now();
+        }}
       />
 
       <input
@@ -129,10 +157,11 @@ export default function Home() {
         id="firepalettestart"
         min={1}
         max={360}
-        defaultValue={0}
-        onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          setPaletteStart(Number(e.target.value))
-        }
+        value={paletteStart}
+        onInput={(e: ChangeEvent<HTMLInputElement>) => {
+          setPaletteStart(Number(e.target.value));
+          lastUpdateTimeRef.current = performance.now();
+        }}
       />
 
       <input
@@ -140,10 +169,11 @@ export default function Home() {
         id="paletteRange"
         min={1}
         max={360}
-        defaultValue={60}
-        onInput={(e: ChangeEvent<HTMLInputElement>) =>
-          setPaletteRange(Number(e.target.value))
-        }
+        value={paletteRange}
+        onInput={(e: ChangeEvent<HTMLInputElement>) => {
+          lastUpdateTimeRef.current = performance.now();
+          setPaletteRange(Number(e.target.value));
+        }}
       />
     </main>
   );

@@ -119,7 +119,12 @@ const JackOLantern = ({
 
   return (
     <div>
-      <input type="checkbox" id="jackolanterncb" onChange={onCheckboxChange} />
+      <input
+        type="checkbox"
+        id="jackolanterncb"
+        onChange={onCheckboxChange}
+        checked={renderJack}
+      />
       <label htmlFor="jackolanterncb">Jack O&apos; Lantern</label>
       <img
         src="jackolanternline.png"
