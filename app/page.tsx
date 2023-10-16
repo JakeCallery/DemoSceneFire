@@ -3,19 +3,19 @@ import FireCanvas from "@/app/components/FireCanvas/FireCanvas";
 import { ChangeEvent, useEffect, useState } from "react";
 import { buildPalette } from "@/app/utils/rgbPaletteBuilder";
 import TextHandler from "@/app/components/TextHandler";
+import { OverlayDataObj } from "@/app/interfaces/interfaces";
 
 const WIDTH = 320;
 const HEIGHT = 240;
 const OVERLAY_WIDTH = 50;
 const OVERLAY_HEIGHT = 50;
+
 export default function Home() {
   const [palette, setPalette] = useState<Uint8ClampedArray>(
     new Uint8ClampedArray(1),
   );
 
-  const [newFireData, setNewFireData] = useState(
-    new Uint8ClampedArray(50 * 50),
-  );
+  const [newFireData, setNewFireData] = useState<OverlayDataObj | null>(null);
 
   const [fireWidth, setFireWidth] = useState(Math.floor(WIDTH / 2));
   const [fireCenterOffset, setFireCenterOffset] = useState(
@@ -26,8 +26,20 @@ export default function Home() {
   const [paletteStart, setPaletteStart] = useState(0);
   const [paletteRange, setPaletteRange] = useState(60);
 
-  function onNewFireData(data: Uint8ClampedArray) {
-    setNewFireData(data);
+  function onNewFireData(
+    data: Uint8ClampedArray,
+    dataWidth: number,
+    dataHeight: number,
+    contentWidth: number,
+    contentHeight: number,
+  ) {
+    setNewFireData({
+      data,
+      dataWidth: dataWidth,
+      dataHeight: dataHeight,
+      contentWidth: contentWidth,
+      contentHeight: contentHeight,
+    });
   }
 
   useEffect(() => {
@@ -48,17 +60,11 @@ export default function Home() {
         height={HEIGHT}
         palette={palette}
         overlayFireData={newFireData}
-        overlayWidth={OVERLAY_WIDTH}
-        overlayHeight={OVERLAY_HEIGHT}
         fireCenterOffset={fireCenterOffset}
         fireWidth={fireWidth}
         fireHeightPercent={fireHeightPercent}
       />
-      <TextHandler
-        onNewFireData={onNewFireData}
-        textWidth={OVERLAY_WIDTH}
-        textHeight={OVERLAY_HEIGHT}
-      />
+      <TextHandler onNewFireData={onNewFireData} />
       <input
         id="firewidthslider"
         type="range"

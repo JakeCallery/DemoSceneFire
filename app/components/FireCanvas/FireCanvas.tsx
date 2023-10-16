@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import PixelCanvas from "../PixelCanvas";
+import { OverlayDataObj } from "@/app/interfaces/interfaces";
 
 const FIRE_COOL_MIN = 4.001;
 const FIRE_COOL_MAX = 5.0;
@@ -10,9 +11,7 @@ interface FireCanvasProps {
   width: number;
   height: number;
   palette: Uint8ClampedArray;
-  overlayFireData: Uint8ClampedArray;
-  overlayWidth: number;
-  overlayHeight: number;
+  overlayFireData: OverlayDataObj | null;
   fireCenterOffset: number;
   fireWidth: number;
   fireHeightPercent: number;
@@ -24,8 +23,6 @@ const FireCanvas = ({
   height,
   palette,
   overlayFireData,
-  overlayWidth,
-  overlayHeight,
   fireCenterOffset,
   fireWidth,
   fireHeightPercent,
@@ -33,18 +30,21 @@ const FireCanvas = ({
   const fireDataRef = useRef(new Uint8ClampedArray(width * height));
 
   useEffect(() => {
-    if (!overlayFireData) return;
-    const xOffset = Math.floor(width / 2 - overlayWidth / 2);
-    const yOffset = Math.floor(height - height / 10 - overlayHeight / 2);
+    if (!overlayFireData || !overlayFireData.data) return;
+    const overlayWidth = overlayFireData.dataWidth;
+    const overlayHeight = overlayFireData.dataHeight;
+    const xOffset = Math.floor(width / 2 - overlayFireData.contentWidth / 2);
+    const yOffset = Math.floor(height / 2 - overlayFireData.contentHeight / 2);
+
     for (let y = 0; y < overlayHeight; y++) {
       for (let x = 0; x < overlayWidth; x++) {
-        if (overlayFireData[y * overlayWidth + x] !== 0) {
+        if (overlayFireData.data[y * overlayWidth + x] !== 0) {
           fireDataRef.current[(y + yOffset) * width + (x + xOffset)] =
-            overlayFireData[y * overlayWidth + x];
+            overlayFireData.data[y * overlayWidth + x];
         }
       }
     }
-  }, [overlayFireData, height, width, overlayWidth, overlayHeight]);
+  }, [overlayFireData, height, width]);
 
   function randomizeFirstRow() {
     const bottomRowOffset = (height - 1) * width;
