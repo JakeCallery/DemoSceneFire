@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { OverlayDataObj } from "@/app/interfaces/interfaces";
 
 interface TextHandlerProps {
   onNewFireData: (
@@ -9,18 +8,52 @@ interface TextHandlerProps {
     contentWidth: number,
     contentHeight: number,
   ) => void;
+  wordList: string[];
+  onNewMessage: (message: string) => void;
+  mainCanvasWidth: number;
+  mainCanvasHeight: number;
 }
 
-const TextHandler = ({ onNewFireData }: TextHandlerProps) => {
+const TextHandler = ({
+  onNewFireData,
+  wordList,
+  onNewMessage,
+}: TextHandlerProps) => {
   const [shortMessage, setShortMessage] = useState("");
+  const [currentWordList, setCurrentWordList] = useState<string[]>([]);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const onNewFireDataCB = useRef(onNewFireData);
+  const wordIndexRef = useRef(0);
+  const timerRef = useRef<NodeJS.Timeout>();
 
-  function onFireMessageClick() {
-    if (!canvasRef!.current) return;
+  useEffect(() => {
+    wordIndexRef.current = 0;
+    if (wordIndexRef.current < currentWordList.length) {
+      renderWord(currentWordList[wordIndexRef.current]);
+      wordIndexRef.current++;
+    }
 
-    const letterWidth = Math.min(Math.ceil(320 / shortMessage.length), 240); //TODO: Pass in canvas width
-    const letterHeight = Math.min(Math.ceil(320 / shortMessage.length), 240); //TODO: make this smarter
+    timerRef.current = setInterval(() => {
+      if (wordIndexRef.current < currentWordList.length) {
+        renderWord(currentWordList[wordIndexRef.current]);
+        wordIndexRef.current++;
+      } else {
+        clearInterval(timerRef.current);
+      }
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [currentWordList]);
+
+  if (currentWordList !== wordList) {
+    setCurrentWordList(wordList);
+  }
+
+  function renderWord(word: string) {
+    if (!canvasRef!.current || !word) return;
+
+    const letterWidth = Math.min(Math.ceil(320 / word.length), 240); //TODO: Pass in canvas width
+    const letterHeight = Math.min(Math.ceil(320 / word.length), 240); //TODO: make this smarter
 
     const canvas = canvasRef.current;
     canvas.width = 320; //TODO: Pass in canvas width
@@ -37,7 +70,7 @@ const TextHandler = ({ onNewFireData }: TextHandlerProps) => {
       ctx.strokeStyle = "white";
       ctx.fillStyle = "rgba(0,0,0,255)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeText(shortMessage, 0, canvas.height, canvas.width);
+      ctx.strokeText(word, 0, canvas.height, canvas.width);
 
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const newFireData = new Uint8ClampedArray(canvas.width * canvas.height);
@@ -62,8 +95,8 @@ const TextHandler = ({ onNewFireData }: TextHandlerProps) => {
     }
   }
 
-  function onChange(evt: ChangeEvent<HTMLInputElement>) {
-    setShortMessage(evt.target.value);
+  function onChange(e: ChangeEvent<HTMLInputElement>) {
+    setShortMessage(e.target.value);
   }
   return (
     <div className="flex-col">
@@ -78,7 +111,10 @@ const TextHandler = ({ onNewFireData }: TextHandlerProps) => {
         required
         maxLength={25}
       ></input>
-      <button className="btn btn-primary" onClick={() => onFireMessageClick()}>
+      <button
+        className="btn btn-primary"
+        onClick={() => onNewMessage(shortMessage)}
+      >
         Light it up
       </button>
     </div>

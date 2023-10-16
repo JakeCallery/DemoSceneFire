@@ -37,7 +37,9 @@ export default function Home() {
     searchParams.get("rj") === "true" || false,
   );
   const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
-
+  // const [wordList, setWordList] = useState(["1", "2", "3", "4", "5"]);
+  // const [currentWord, setCurrentWord] = useState("test");
+  const [wordList, setWordList] = useState<string[]>([]);
   const lastUpdateTimeRef = useRef(performance.now());
   const timerRef = useRef<NodeJS.Timeout>();
 
@@ -92,6 +94,10 @@ export default function Home() {
     setRenderJack(e.target.checked);
   }
 
+  function onNewMessage(message: string) {
+    setWordList(message.split(" ", 10));
+  }
+
   return (
     <main>
       <h1>Demoscene Fire Effect</h1>
@@ -111,7 +117,13 @@ export default function Home() {
         renderJack={renderJack}
         onRenderJackCBChange={onRenderJackCBChange}
       />
-      <TextHandler onNewFireData={onNewFireData} />
+      <TextHandler
+        onNewFireData={onNewFireData}
+        wordList={wordList}
+        onNewMessage={onNewMessage}
+        mainCanvasWidth={WIDTH}
+        mainCanvasHeight={HEIGHT}
+      />
       <input
         id="firewidthslider"
         type="range"
