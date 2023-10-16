@@ -4,11 +4,10 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { buildPalette } from "@/app/utils/rgbPaletteBuilder";
 import TextHandler from "@/app/components/TextHandler";
 import { OverlayDataObj } from "@/app/interfaces/interfaces";
+import JackOLantern from "@/app/components/JackOLantern";
 
 const WIDTH = 320;
 const HEIGHT = 240;
-const OVERLAY_WIDTH = 50;
-const OVERLAY_HEIGHT = 50;
 
 export default function Home() {
   const [palette, setPalette] = useState<Uint8ClampedArray>(
@@ -63,6 +62,11 @@ export default function Home() {
         fireCenterOffset={fireCenterOffset}
         fireWidth={fireWidth}
         fireHeightPercent={fireHeightPercent}
+      />
+      <JackOLantern
+        width={WIDTH}
+        height={HEIGHT}
+        onNewFireData={onNewFireData}
       />
       <TextHandler onNewFireData={onNewFireData} />
       <input
