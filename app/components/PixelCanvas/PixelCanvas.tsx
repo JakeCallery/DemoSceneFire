@@ -20,7 +20,10 @@ const PixelCanvas = ({
   const [scaledWidth, setScaledWidth] = useState(1);
   const [scaledHeight, setScaledHeight] = useState(1);
 
+  console.log("Render");
+
   useEffect(() => {
+    console.log("Update viewport");
     const vw = Math.max(
       window.document.documentElement.clientWidth || 0,
       window.innerWidth || 0,
