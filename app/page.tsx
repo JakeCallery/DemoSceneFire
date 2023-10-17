@@ -104,6 +104,28 @@ export default function Home() {
 
   return (
     <main className="p-5">
+      <a
+        href="https://www.linkedin.com/in/jakecallery/"
+        className=" w-full text-right"
+      >
+        <div className="bg-primary p-5 rounded-btn">
+          <p className="font-bold text-2xl">Jake Callery</p>
+          <p className="text-lg">Frontend Developer, Open For Work</p>
+          <p className="text-sm text-secondary">click for profile</p>
+        </div>
+      </a>
+
+      <div className="mt-5">
+        <p className="font-bold text-2xl">Experiment:</p>
+        <p>My take on the old school demo scene fire effect</p>
+        <a
+          className="text-secondary"
+          href="https://github.com/JakeCallery/DemoSceneFire"
+        >
+          Source Code on Github
+        </a>
+      </div>
+      <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="flex justify-center">
         <FireCanvas
           width={WIDTH}
@@ -115,7 +137,12 @@ export default function Home() {
           fireHeightPercent={fireHeightPercent}
         />
       </div>
-      <div className="mt-10">
+      <p className="mt-5">
+        <span className="font-bold">Pro Tip</span>: Copy link to send message
+        and configuration to friends
+      </p>
+      <div className="divider before:bg-base-50 after:bg-base-50" />
+      <div className="mt-2">
         <JackOLantern
           width={WIDTH}
           height={HEIGHT}

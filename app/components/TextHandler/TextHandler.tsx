@@ -111,11 +111,11 @@ const TextHandler = ({
   return (
     <>
       <canvas ref={canvasRef} hidden={true}></canvas>
-      <div className="">
+      <div className="flex-row w-full md:space-x-2">
         <input
           type="text"
           id="first_name"
-          className="align-middle input input-bordered input-secondary w-full"
+          className="align-middle input input-bordered input-secondary w-full md:w-64"
           placeholder="Text to set a blaze"
           value={shortMessage}
           onChange={onChange}
@@ -124,7 +124,7 @@ const TextHandler = ({
           onKeyDown={(e) => e.key === "Enter" && onNewMessage(shortMessage)}
         ></input>
         <button
-          className="btn btn-primary align-middle w-full mt-2"
+          className="btn btn-primary align-middle w-full mt-2 md:mt-0 md:w-64"
           onClick={() => onNewMessage(shortMessage)}
         >
           Send message to fire
