@@ -6,6 +6,14 @@ import TextHandler from "@/app/components/TextHandler";
 import { OverlayDataObj } from "@/app/interfaces/interfaces";
 import JackOLantern from "@/app/components/JackOLantern";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from "react-share";
 
 const WIDTH = 320;
 const HEIGHT = 240;
@@ -141,6 +149,23 @@ export default function Home() {
         <span className="font-bold">Pro Tip</span>: Copy link to send message
         and configuration to friends
       </p>
+      <div className="flex-row space-x-2 mt-2">
+        <TwitterShareButton
+          url="https://fire.jakecallery.com"
+          title="Flames for Haloween"
+          via="jakecallery"
+          hashtags={["haloween", "demoscene", "fire"]}
+        >
+          <TwitterIcon size={32} round={true} />
+        </TwitterShareButton>
+        <FacebookShareButton
+          url="https://fire.jakecallery.com"
+          quote="Some old school flames for haloween!"
+          hashtag="#demoscene"
+        >
+          <FacebookIcon size={32} round={true} />
+        </FacebookShareButton>
+      </div>
       <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="mt-2">
         <JackOLantern
