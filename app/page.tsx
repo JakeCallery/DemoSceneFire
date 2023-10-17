@@ -133,22 +133,6 @@ export default function Home() {
           Source Code on Github
         </a>
       </div>
-      <div className="divider before:bg-base-50 after:bg-base-50" />
-      <div className="flex justify-center">
-        <FireCanvas
-          width={WIDTH}
-          height={HEIGHT}
-          palette={palette}
-          overlayFireData={newFireData}
-          fireCenterOffset={fireCenterOffset}
-          fireWidth={fireWidth}
-          fireHeightPercent={fireHeightPercent}
-        />
-      </div>
-      <p className="mt-5">
-        <span className="font-bold">Pro Tip</span>: Copy link to send message
-        and configuration to friends
-      </p>
       <div className="flex-row space-x-2 mt-2">
         <TwitterShareButton
           url="https://fire.jakecallery.com"
@@ -166,6 +150,22 @@ export default function Home() {
           <FacebookIcon size={32} round={true} />
         </FacebookShareButton>
       </div>
+      <div className="divider before:bg-base-50 after:bg-base-50" />
+      <div className="flex justify-center">
+        <FireCanvas
+          width={WIDTH}
+          height={HEIGHT}
+          palette={palette}
+          overlayFireData={newFireData}
+          fireCenterOffset={fireCenterOffset}
+          fireWidth={fireWidth}
+          fireHeightPercent={fireHeightPercent}
+        />
+      </div>
+      <p className="mt-5">
+        <span className="font-bold">Pro Tip</span>: Copy link to send message
+        and configuration to friends
+      </p>
       <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="mt-2">
         <JackOLantern
