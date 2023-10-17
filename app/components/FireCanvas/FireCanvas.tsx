@@ -120,6 +120,7 @@ const FireCanvas = ({
         width={width}
         height={height}
         updatePixels={updatePixels}
+        scaleFactor={0.9}
       />
     </div>
   );

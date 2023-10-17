@@ -118,14 +118,17 @@ const JackOLantern = ({
   }
 
   return (
-    <div>
+    <>
       <input
+        className="toggle toggle-warning toggle-lg align-middle"
         type="checkbox"
         id="jackolanterncb"
         onChange={onCheckboxChange}
         checked={renderJack}
       />
-      <label htmlFor="jackolanterncb">Jack O&apos; Lantern</label>
+      <label className="text-xl align-middle pl-5" htmlFor="jackolanterncb">
+        Enable Jack O&apos; Lantern!
+      </label>
       <img
         src="jackolanternline.png"
         alt=""
@@ -141,7 +144,7 @@ const JackOLantern = ({
         ref={canvasRef}
         hidden={true}
       />
-    </div>
+    </>
   );
 };
 
