@@ -1,15 +1,34 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface CanvasProps {
   id: string;
   width: number;
   height: number;
   updatePixels: (imageData: ImageData) => ImageData;
+  scaleFactor: number;
 }
 
-const PixelCanvas = ({ id, width, height, updatePixels }: CanvasProps) => {
+const PixelCanvas = ({
+  id,
+  width,
+  height,
+  updatePixels,
+  scaleFactor,
+}: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastTimeStampRef = useRef(0);
+  const [scaledWidth, setScaledWidth] = useState(1);
+  const [scaledHeight, setScaledHeight] = useState(1);
+
+  useEffect(() => {
+    const vw = Math.max(
+      window.document.documentElement.clientWidth || 0,
+      window.innerWidth || 0,
+    );
+    const scaleRatio = vw / width;
+    setScaledWidth(Math.floor(width * scaleRatio) * scaleFactor);
+    setScaledHeight(Math.floor(height * scaleRatio) * scaleFactor);
+  }, [width, height, scaleFactor]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -37,7 +56,15 @@ const PixelCanvas = ({ id, width, height, updatePixels }: CanvasProps) => {
     };
   }, [updatePixels, height, width]);
 
-  return <canvas id={id} ref={canvasRef} width={width} height={height} />;
+  return (
+    <canvas
+      id={id}
+      ref={canvasRef}
+      width={width}
+      height={height}
+      style={{ width: `${scaledWidth}px`, height: `${scaledHeight}px` }}
+    />
+  );
 };
 
 export default PixelCanvas;

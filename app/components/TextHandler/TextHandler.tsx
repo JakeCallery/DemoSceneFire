@@ -109,25 +109,28 @@ const TextHandler = ({
     setShortMessage(e.target.value);
   }
   return (
-    <div className="flex-col">
+    <>
       <canvas ref={canvasRef} hidden={true}></canvas>
-      <input
-        type="text"
-        id="first_name"
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder=""
-        value={shortMessage}
-        onChange={onChange}
-        required
-        maxLength={maxChars}
-      ></input>
-      <button
-        className="btn btn-primary"
-        onClick={() => onNewMessage(shortMessage)}
-      >
-        Light it up
-      </button>
-    </div>
+      <div className="">
+        <input
+          type="text"
+          id="first_name"
+          className="align-middle input input-bordered input-secondary w-full"
+          placeholder="Text to set a blaze"
+          value={shortMessage}
+          onChange={onChange}
+          required
+          maxLength={maxChars}
+          onKeyDown={(e) => e.key === "Enter" && onNewMessage(shortMessage)}
+        ></input>
+        <button
+          className="btn btn-primary align-middle w-full mt-2"
+          onClick={() => onNewMessage(shortMessage)}
+        >
+          Send message to fire
+        </button>
+      </div>
+    </>
   );
 };
 

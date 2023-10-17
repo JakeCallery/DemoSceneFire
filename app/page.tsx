@@ -66,6 +66,7 @@ export default function Home() {
       if (lastUpdateTimeRef.current + UPDATE_INTERVAL_MS <= performance.now()) {
         router.replace(
           `?fw=${fireWidth}&co=${fireCenterOffset}&hp=${fireHeightPercent}&ps=${paletteStart}&pr=${paletteRange}&rj=${renderJack}&fm=${fireMessage}`,
+          { scroll: false },
         );
       }
     }, UPDATE_INTERVAL_MS);
@@ -102,34 +103,41 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <h1>Demoscene Fire Effect</h1>
-      <FireCanvas
-        width={WIDTH}
-        height={HEIGHT}
-        palette={palette}
-        overlayFireData={newFireData}
-        fireCenterOffset={fireCenterOffset}
-        fireWidth={fireWidth}
-        fireHeightPercent={fireHeightPercent}
-      />
-      <JackOLantern
-        width={WIDTH}
-        height={HEIGHT}
-        onNewFireData={onNewFireData}
-        renderJack={renderJack}
-        onRenderJackCBChange={onRenderJackCBChange}
-      />
-      <TextHandler
-        onNewFireData={onNewFireData}
-        wordList={wordList}
-        onNewMessage={onNewMessage}
-        mainCanvasWidth={WIDTH}
-        mainCanvasHeight={HEIGHT}
-        maxChars={MAX_CHARS}
-      />
+    <main className="p-5">
+      <div className="flex justify-center">
+        <FireCanvas
+          width={WIDTH}
+          height={HEIGHT}
+          palette={palette}
+          overlayFireData={newFireData}
+          fireCenterOffset={fireCenterOffset}
+          fireWidth={fireWidth}
+          fireHeightPercent={fireHeightPercent}
+        />
+      </div>
+      <div className="mt-10">
+        <JackOLantern
+          width={WIDTH}
+          height={HEIGHT}
+          onNewFireData={onNewFireData}
+          renderJack={renderJack}
+          onRenderJackCBChange={onRenderJackCBChange}
+        />
+      </div>
+      <div className="mt-5">
+        <TextHandler
+          onNewFireData={onNewFireData}
+          wordList={wordList}
+          onNewMessage={onNewMessage}
+          mainCanvasWidth={WIDTH}
+          mainCanvasHeight={HEIGHT}
+          maxChars={MAX_CHARS}
+        />
+      </div>
+      <p className="mt-5">Fire Width</p>
       <input
         id="firewidthslider"
+        className="range range-secondary"
         type="range"
         min="0"
         max={WIDTH}
@@ -141,8 +149,10 @@ export default function Home() {
         }}
       />
 
+      <p className="mt-2">Position</p>
       <input
         id="firecenteroffsetslider"
+        className="range range-secondary col-span-8"
         type="range"
         min={Math.floor(fireWidth / 2)}
         max={WIDTH - Math.floor(fireWidth / 2)}
@@ -155,8 +165,10 @@ export default function Home() {
         disabled={WIDTH === fireWidth}
       />
 
+      <p className="mt-2">Rage</p>
       <input
         type="range"
+        className="range range-secondary col-span-8"
         id="fireheightslider"
         min={0}
         max={100}
@@ -168,8 +180,10 @@ export default function Home() {
         }}
       />
 
+      <p className="mt-2">Hue Base</p>
       <input
         type="range"
+        className="range range-secondary col-span-8"
         id="firepalettestart"
         min={1}
         max={360}
@@ -180,8 +194,10 @@ export default function Home() {
         }}
       />
 
+      <p className="mt-2">Hue Range</p>
       <input
         type="range"
+        className="range range-secondary col-span-8"
         id="paletteRange"
         min={1}
         max={360}
