@@ -27,7 +27,7 @@ export default function Home() {
   );
   const [newFireData, setNewFireData] = useState<OverlayDataObj | null>(null);
   const [fireWidth, setFireWidth] = useState(
-    Math.min(Number(searchParams.get("fw")) || Math.floor(WIDTH / 2), WIDTH),
+    Number(searchParams.get("fw")) || WIDTH,
   );
   const [fireCenterOffset, setFireCenterOffset] = useState(
     Math.min(Number(searchParams.get("co")) || Math.floor(WIDTH / 2), WIDTH),
@@ -42,7 +42,7 @@ export default function Home() {
     Math.min(Number(searchParams.get("pr")) || 60, 360),
   );
   const [renderJack, setRenderJack] = useState(
-    searchParams.get("rj") === "true" || false,
+    !searchParams.get("rj") || searchParams.get("rj") === "true",
   );
 
   const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
@@ -122,15 +122,17 @@ export default function Home() {
   }
 
   return (
-    <main className="p-5 max-w-5xl ml-auto mr-auto">
+    <main className="p-5 max-w-2xl ml-auto mr-auto">
       <a
         href="https://www.linkedin.com/in/jakecallery/"
         className=" w-full text-right"
       >
-        <div className="bg-primary p-5 rounded-btn">
-          <p className="font-bold text-2xl">Jake Callery</p>
-          <p className="text-lg">Frontend Developer, Open For Work</p>
-          <p className="text-sm text-secondary">click for profile</p>
+        <div className="bg-primary p-2 rounded-btn">
+          <p className="font-bold text-xl">Jake Callery</p>
+          <p className="text-md">Frontend Developer, Open For Work</p>
+          <p className="text-sm text-secondary">
+            https://www.linkedin.com/in/jakecallery
+          </p>
         </div>
       </a>
 
@@ -199,79 +201,88 @@ export default function Home() {
           onMessageStop={() => (isRenderingMessageRef.current = false)}
         />
       </div>
-      <p className="mt-5">Fire Width</p>
-      <input
-        id="firewidthslider"
-        className="range range-secondary"
-        type="range"
-        min="0"
-        max={WIDTH}
-        step="1"
-        value={fireWidth}
-        onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          setFireWidth(Number(e.target.value));
-          lastUpdateTimeRef.current = performance.now();
-        }}
-      />
 
-      <p className="mt-2">Position</p>
-      <input
-        id="firecenteroffsetslider"
-        className="range range-secondary col-span-8"
-        type="range"
-        min={Math.floor(fireWidth / 2)}
-        max={WIDTH - Math.floor(fireWidth / 2)}
-        step="1"
-        value={fireCenterOffset}
-        onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          setFireCenterOffset(Number(e.target.value));
-          lastUpdateTimeRef.current = performance.now();
-        }}
-        disabled={WIDTH === fireWidth}
-      />
-
-      <p className="mt-2">Rage</p>
-      <input
-        type="range"
-        className="range range-secondary col-span-8"
-        id="fireheightslider"
-        min={0}
-        max={100}
-        step={1}
-        value={fireHeightPercent}
-        onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          setFireHeightPercent(Number(e.target.value));
-          lastUpdateTimeRef.current = performance.now();
-        }}
-      />
-
-      <p className="mt-2">Hue Base</p>
-      <input
-        type="range"
-        className="range range-secondary col-span-8"
-        id="firepalettestart"
-        min={1}
-        max={360}
-        value={paletteStart}
-        onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          setPaletteStart(Number(e.target.value));
-          lastUpdateTimeRef.current = performance.now();
-        }}
-      />
-
-      <p className="mt-2">Hue Range</p>
-      <input
-        type="range"
-        className="range range-secondary col-span-8"
-        id="paletteRange"
-        min={1}
-        max={360}
-        value={paletteRange}
-        onInput={(e: ChangeEvent<HTMLInputElement>) => {
-          lastUpdateTimeRef.current = performance.now();
-          setPaletteRange(Number(e.target.value));
-        }}
-      />
+      <div className="container flex-col space-y-4">
+        <div className="container flex-col space-y-1">
+          <p className="mt-2">Flame Height</p>
+          <input
+            type="range"
+            className="range range-secondary"
+            id="fireheightslider"
+            min={0}
+            max={100}
+            step={1}
+            value={fireHeightPercent}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              setFireHeightPercent(Number(e.target.value));
+              lastUpdateTimeRef.current = performance.now();
+            }}
+          />
+        </div>
+        <div className="container flex-col space-y-1">
+          <p className="mt-5">Flame Width</p>
+          <input
+            id="firewidthslider"
+            className="range range-secondary"
+            type="range"
+            min="0"
+            max={WIDTH}
+            step="1"
+            value={fireWidth}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              setFireWidth(Number(e.target.value));
+              lastUpdateTimeRef.current = performance.now();
+            }}
+          />
+        </div>
+        <div className="container flex-col space-y-1">
+          <p className="mt-2">Flame Position</p>
+          <input
+            id="firecenteroffsetslider"
+            className="range range-secondary"
+            type="range"
+            min={Math.floor(fireWidth / 2)}
+            max={WIDTH - Math.floor(fireWidth / 2)}
+            step="1"
+            value={fireCenterOffset}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              setFireCenterOffset(Number(e.target.value));
+              lastUpdateTimeRef.current = performance.now();
+            }}
+            disabled={WIDTH === fireWidth}
+          />
+        </div>
+        <div className="container flex-col space-y-1">
+          <p className="mt-2">Hue Base</p>
+          <input
+            type="range"
+            className="range range-secondary"
+            id="firepalettestart"
+            min={1}
+            max={360}
+            value={paletteStart}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              setPaletteStart(Number(e.target.value));
+              lastUpdateTimeRef.current = performance.now();
+            }}
+          />
+        </div>
+        <div className="container flex-col space-y-1">
+          <p className="mt-2">Hue Range</p>
+          <input
+            type="range"
+            className="range range-secondary"
+            id="paletteRange"
+            min={1}
+            max={360}
+            value={paletteRange}
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              lastUpdateTimeRef.current = performance.now();
+              setPaletteRange(Number(e.target.value));
+            }}
+          />
+        </div>
+      </div>
     </main>
   );
 }
