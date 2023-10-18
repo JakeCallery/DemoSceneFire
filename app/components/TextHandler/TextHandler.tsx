@@ -39,10 +39,6 @@ const TextHandler = ({
   useEffect(() => {
     wordIndexRef.current = 0;
     onMessageStart();
-    if (wordIndexRef.current < currentWordList.length) {
-      renderWord(currentWordList[wordIndexRef.current]);
-      wordIndexRef.current++;
-    }
 
     timerRef.current = setInterval(() => {
       if (wordIndexRef.current < currentWordList.length) {
