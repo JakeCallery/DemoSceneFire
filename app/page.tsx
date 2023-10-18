@@ -15,7 +15,7 @@ import {
 
 const WIDTH = 320;
 const HEIGHT = 240;
-const UPDATE_INTERVAL_MS = 250;
+const PARAMS_UPDATE_INTERVAL_MS = 250;
 const MAX_WORDS = 20;
 const MAX_CHARS = 140;
 export default function Home() {
@@ -79,13 +79,16 @@ export default function Home() {
 
   useEffect(() => {
     timerRef.current = setTimeout(() => {
-      if (lastUpdateTimeRef.current + UPDATE_INTERVAL_MS <= performance.now()) {
+      if (
+        lastUpdateTimeRef.current + PARAMS_UPDATE_INTERVAL_MS <=
+        performance.now()
+      ) {
         router.replace(
           `?fw=${fireWidth}&co=${fireCenterOffset}&hp=${fireHeightPercent}&ps=${paletteStart}&pr=${paletteRange}&rj=${renderJack}&fm=${fireMessage}`,
           { scroll: false },
         );
       }
-    }, UPDATE_INTERVAL_MS);
+    }, PARAMS_UPDATE_INTERVAL_MS);
 
     return () => clearTimeout(timerRef.current);
   }, [
