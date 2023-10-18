@@ -49,12 +49,17 @@ const TextHandler = ({
     return () => clearInterval(timerRef.current);
   }, [currentWordList]);
 
-  if (currentWordList !== wordList) {
+  if (
+    currentWordList !== wordList &&
+    wordList.length > 0 &&
+    wordList[0] !== ""
+  ) {
     setCurrentWordList(wordList);
+    setShortMessage(wordList.join(" "));
   }
 
   function renderWord(word: string) {
-    if (!canvasRef!.current || !word) return;
+    if (!canvasRef.current || !word) return;
 
     const letterWidth = Math.min(
       Math.ceil(mainCanvasWidth / word.length),

@@ -9,8 +9,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   FacebookIcon,
   FacebookShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
   TwitterIcon,
   TwitterShareButton,
 } from "react-share";
@@ -111,7 +109,7 @@ export default function Home() {
   }
 
   return (
-    <main className="p-5">
+    <main className="p-5 max-w-5xl ml-auto mr-auto">
       <a
         href="https://www.linkedin.com/in/jakecallery/"
         className=" w-full text-right"
