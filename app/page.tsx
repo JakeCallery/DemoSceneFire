@@ -122,7 +122,7 @@ export default function Home() {
   }
 
   return (
-    <main className="p-5 max-w-2xl ml-auto mr-auto">
+    <main className="p-5 max-w-5xl ml-auto mr-auto">
       <a
         href="https://www.linkedin.com/in/jakecallery/"
         className=" w-full text-right"
@@ -149,15 +149,15 @@ export default function Home() {
       <div className="flex-row space-x-2 mt-2">
         <TwitterShareButton
           url="https://fire.jakecallery.com"
-          title="Flames for Haloween"
+          title="Flames for Halloween"
           via="jakecallery"
-          hashtags={["haloween", "demoscene", "fire"]}
+          hashtags={["halloween", "demoscene", "fire"]}
         >
           <TwitterIcon size={32} round={true} />
         </TwitterShareButton>
         <FacebookShareButton
           url="https://fire.jakecallery.com"
-          quote="Some old school flames for haloween!"
+          quote="Some old school flames for halloween!"
           hashtag="#demoscene"
         >
           <FacebookIcon size={32} round={true} />
@@ -202,8 +202,8 @@ export default function Home() {
         />
       </div>
 
-      <div className="container flex-col space-y-4">
-        <div className="container flex-col space-y-1">
+      <div className="flex-col space-y-4 max-w-5xl">
+        <div className="flex-col space-y-1">
           <p className="mt-2">Flame Height</p>
           <input
             type="range"
@@ -219,7 +219,7 @@ export default function Home() {
             }}
           />
         </div>
-        <div className="container flex-col space-y-1">
+        <div className="flex-col space-y-1">
           <p className="mt-5">Flame Width</p>
           <input
             id="firewidthslider"
@@ -235,7 +235,7 @@ export default function Home() {
             }}
           />
         </div>
-        <div className="container flex-col space-y-1">
+        <div className="flex-col space-y-1">
           <p className="mt-2">Flame Position</p>
           <input
             id="firecenteroffsetslider"
@@ -252,7 +252,7 @@ export default function Home() {
             disabled={WIDTH === fireWidth}
           />
         </div>
-        <div className="container flex-col space-y-1">
+        <div className="flex-col space-y-1">
           <p className="mt-2">Hue Base</p>
           <input
             type="range"
@@ -267,7 +267,7 @@ export default function Home() {
             }}
           />
         </div>
-        <div className="container flex-col space-y-1">
+        <div className="flex-col space-y-1">
           <p className="mt-2">Hue Range</p>
           <input
             type="range"
