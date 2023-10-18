@@ -14,6 +14,8 @@ interface TextHandlerProps {
   mainCanvasWidth: number;
   mainCanvasHeight: number;
   maxChars: number;
+  onMessageStart: () => void;
+  onMessageStop: () => void;
 }
 
 const TextHandler = ({
@@ -23,6 +25,8 @@ const TextHandler = ({
   mainCanvasWidth,
   mainCanvasHeight,
   maxChars,
+  onMessageStart,
+  onMessageStop,
 }: TextHandlerProps) => {
   const [shortMessage, setShortMessage] = useState("");
   const [currentWordList, setCurrentWordList] = useState<string[]>([]);
@@ -34,6 +38,7 @@ const TextHandler = ({
 
   useEffect(() => {
     wordIndexRef.current = 0;
+    onMessageStart();
     if (wordIndexRef.current < currentWordList.length) {
       renderWord(currentWordList[wordIndexRef.current]);
       wordIndexRef.current++;
@@ -45,6 +50,7 @@ const TextHandler = ({
         wordIndexRef.current++;
       } else {
         clearInterval(timerRef.current);
+        onMessageStop();
       }
     }, 1000);
     return () => clearInterval(timerRef.current);

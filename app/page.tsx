@@ -51,9 +51,9 @@ export default function Home() {
   );
 
   const lastUpdateTimeRef = useRef(performance.now());
-  const renderTextOnlyRef = useRef(false);
-  const lastTextRenderTimeRef = useRef(performance.now());
   const timerRef = useRef<NodeJS.Timeout>();
+
+  const isRenderingMessageRef = useRef(false);
 
   function onNewFireData(
     data: Uint8ClampedArray,
@@ -63,17 +63,9 @@ export default function Home() {
     contentHeight: number,
     source: string,
   ) {
-    if (source === "text") {
-      if (!renderTextOnlyRef.current) {
-        lastTextRenderTimeRef.current = performance.now();
-      }
-      renderTextOnlyRef.current = true;
-    }
-
     if (
-      (source === "text" && renderTextOnlyRef.current) ||
-      (!(source === "text") && !renderTextOnlyRef.current) ||
-      !renderJack
+      (source === "text" && isRenderingMessageRef.current) ||
+      (!(source === "text") && !isRenderingMessageRef.current)
     ) {
       setNewFireData({
         data,
@@ -82,13 +74,6 @@ export default function Home() {
         contentWidth: contentWidth,
         contentHeight: contentHeight,
       });
-    }
-
-    if (
-      renderTextOnlyRef.current &&
-      lastTextRenderTimeRef.current + 18 <= performance.now()
-    ) {
-      renderTextOnlyRef.current = false;
     }
   }
 
@@ -207,6 +192,8 @@ export default function Home() {
           mainCanvasWidth={WIDTH}
           mainCanvasHeight={HEIGHT}
           maxChars={MAX_CHARS}
+          onMessageStart={() => (isRenderingMessageRef.current = true)}
+          onMessageStop={() => (isRenderingMessageRef.current = false)}
         />
       </div>
       <p className="mt-5">Fire Width</p>
