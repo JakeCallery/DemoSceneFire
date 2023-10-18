@@ -7,12 +7,15 @@ interface TextHandlerProps {
     dataHeight: number,
     contentWidth: number,
     contentHeight: number,
+    source: string,
   ) => void;
   wordList: string[];
   onNewMessage: (message: string) => void;
   mainCanvasWidth: number;
   mainCanvasHeight: number;
   maxChars: number;
+  onMessageStart: () => void;
+  onMessageStop: () => void;
 }
 
 const TextHandler = ({
@@ -22,6 +25,8 @@ const TextHandler = ({
   mainCanvasWidth,
   mainCanvasHeight,
   maxChars,
+  onMessageStart,
+  onMessageStop,
 }: TextHandlerProps) => {
   const [shortMessage, setShortMessage] = useState("");
   const [currentWordList, setCurrentWordList] = useState<string[]>([]);
@@ -33,6 +38,7 @@ const TextHandler = ({
 
   useEffect(() => {
     wordIndexRef.current = 0;
+    onMessageStart();
     if (wordIndexRef.current < currentWordList.length) {
       renderWord(currentWordList[wordIndexRef.current]);
       wordIndexRef.current++;
@@ -44,18 +50,23 @@ const TextHandler = ({
         wordIndexRef.current++;
       } else {
         clearInterval(timerRef.current);
+        onMessageStop();
       }
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [currentWordList]);
 
-  if (currentWordList !== wordList) {
+  if (
+    currentWordList !== wordList &&
+    wordList.length > 0 &&
+    wordList[0] !== ""
+  ) {
     setCurrentWordList(wordList);
+    setShortMessage(wordList.join(" "));
   }
 
   function renderWord(word: string) {
-    if (!canvasRef!.current || !word) return;
-
+    if (!canvasRef.current || !word) return;
     const letterWidth = Math.min(
       Math.ceil(mainCanvasWidth / word.length),
       mainCanvasHeight,
@@ -101,6 +112,7 @@ const TextHandler = ({
         canvas.height,
         largestX,
         largestY,
+        "text",
       );
     }
   }

@@ -6,10 +6,16 @@ import TextHandler from "@/app/components/TextHandler";
 import { OverlayDataObj } from "@/app/interfaces/interfaces";
 import JackOLantern from "@/app/components/JackOLantern";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from "react-share";
 
 const WIDTH = 320;
 const HEIGHT = 240;
-const UPDATE_INTERVAL_MS = 250;
+const PARAMS_UPDATE_INTERVAL_MS = 250;
 const MAX_WORDS = 20;
 const MAX_CHARS = 140;
 export default function Home() {
@@ -38,12 +44,16 @@ export default function Home() {
   const [renderJack, setRenderJack] = useState(
     searchParams.get("rj") === "true" || false,
   );
+
   const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
   const [wordList, setWordList] = useState<string[]>(
     searchParams.get("fm")?.split(" ", MAX_WORDS) || [],
   );
+
   const lastUpdateTimeRef = useRef(performance.now());
   const timerRef = useRef<NodeJS.Timeout>();
+
+  const isRenderingMessageRef = useRef(false);
 
   function onNewFireData(
     data: Uint8ClampedArray,
@@ -51,25 +61,34 @@ export default function Home() {
     dataHeight: number,
     contentWidth: number,
     contentHeight: number,
+    source: string,
   ) {
-    setNewFireData({
-      data,
-      dataWidth: dataWidth,
-      dataHeight: dataHeight,
-      contentWidth: contentWidth,
-      contentHeight: contentHeight,
-    });
+    if (
+      (source === "text" && isRenderingMessageRef.current) ||
+      (!(source === "text") && !isRenderingMessageRef.current)
+    ) {
+      setNewFireData({
+        data,
+        dataWidth: dataWidth,
+        dataHeight: dataHeight,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
+      });
+    }
   }
 
   useEffect(() => {
     timerRef.current = setTimeout(() => {
-      if (lastUpdateTimeRef.current + UPDATE_INTERVAL_MS <= performance.now()) {
+      if (
+        lastUpdateTimeRef.current + PARAMS_UPDATE_INTERVAL_MS <=
+        performance.now()
+      ) {
         router.replace(
           `?fw=${fireWidth}&co=${fireCenterOffset}&hp=${fireHeightPercent}&ps=${paletteStart}&pr=${paletteRange}&rj=${renderJack}&fm=${fireMessage}`,
           { scroll: false },
         );
       }
-    }, UPDATE_INTERVAL_MS);
+    }, PARAMS_UPDATE_INTERVAL_MS);
 
     return () => clearTimeout(timerRef.current);
   }, [
@@ -103,7 +122,7 @@ export default function Home() {
   }
 
   return (
-    <main className="p-5">
+    <main className="p-5 max-w-5xl ml-auto mr-auto">
       <a
         href="https://www.linkedin.com/in/jakecallery/"
         className=" w-full text-right"
@@ -125,6 +144,23 @@ export default function Home() {
           Source Code on Github
         </a>
       </div>
+      <div className="flex-row space-x-2 mt-2">
+        <TwitterShareButton
+          url="https://fire.jakecallery.com"
+          title="Flames for Haloween"
+          via="jakecallery"
+          hashtags={["haloween", "demoscene", "fire"]}
+        >
+          <TwitterIcon size={32} round={true} />
+        </TwitterShareButton>
+        <FacebookShareButton
+          url="https://fire.jakecallery.com"
+          quote="Some old school flames for haloween!"
+          hashtag="#demoscene"
+        >
+          <FacebookIcon size={32} round={true} />
+        </FacebookShareButton>
+      </div>
       <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="flex justify-center">
         <FireCanvas
@@ -138,8 +174,8 @@ export default function Home() {
         />
       </div>
       <p className="mt-5">
-        <span className="font-bold">Pro Tip</span>: Copy link to send message
-        and configuration to friends
+        <span className="font-bold">Pro Tip</span>: Copy and paste link in
+        address bar to send message and configuration to friends
       </p>
       <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="mt-2">
@@ -159,6 +195,8 @@ export default function Home() {
           mainCanvasWidth={WIDTH}
           mainCanvasHeight={HEIGHT}
           maxChars={MAX_CHARS}
+          onMessageStart={() => (isRenderingMessageRef.current = true)}
+          onMessageStop={() => (isRenderingMessageRef.current = false)}
         />
       </div>
       <p className="mt-5">Fire Width</p>

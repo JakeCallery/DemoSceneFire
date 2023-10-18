@@ -114,13 +114,12 @@ const FireCanvas = ({
   }
 
   return (
-    <div className="flex-row">
+    <div className="flex-row w-full h-full">
       <PixelCanvas
         id={"firecanvas"}
         width={width}
         height={height}
         updatePixels={updatePixels}
-        scaleFactor={0.9}
       />
     </div>
   );
