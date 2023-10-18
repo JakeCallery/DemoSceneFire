@@ -7,7 +7,7 @@ This is _technically_ a next.js app, because I wanted to learn more about handli
 still being able to use the standard components, props, etc... for the controls, as it wasn't something I did a lot of in the past.
 
 ## Happy Halloween!
-
+![image](https://github.com/JakeCallery/DemoSceneFire/assets/1918511/2634327f-7077-49bf-894b-6e58cd9c4fa5)
 
 ## Tech used
 - NEXT.js
