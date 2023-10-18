@@ -16,6 +16,7 @@ const JackOLantern = ({
     dataHeight: number,
     contentWidth: number,
     contentHeight: number,
+    jack: string,
   ) => void;
   renderJack: boolean;
   onRenderJackCBChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -90,6 +91,7 @@ const JackOLantern = ({
             canvas.height,
             largestX,
             largestY,
+            "jack",
           );
           if (renderJack)
             animationFrameIdRef.current = window.requestAnimationFrame(render);

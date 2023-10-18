@@ -7,6 +7,7 @@ interface TextHandlerProps {
     dataHeight: number,
     contentWidth: number,
     contentHeight: number,
+    source: string,
   ) => void;
   wordList: string[];
   onNewMessage: (message: string) => void;
@@ -60,7 +61,6 @@ const TextHandler = ({
 
   function renderWord(word: string) {
     if (!canvasRef.current || !word) return;
-
     const letterWidth = Math.min(
       Math.ceil(mainCanvasWidth / word.length),
       mainCanvasHeight,
@@ -106,6 +106,7 @@ const TextHandler = ({
         canvas.height,
         largestX,
         largestY,
+        "text",
       );
     }
   }

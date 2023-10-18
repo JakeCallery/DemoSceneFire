@@ -44,11 +44,15 @@ export default function Home() {
   const [renderJack, setRenderJack] = useState(
     searchParams.get("rj") === "true" || false,
   );
+
   const [fireMessage, setFireMessage] = useState(searchParams.get("fm") || "");
   const [wordList, setWordList] = useState<string[]>(
     searchParams.get("fm")?.split(" ", MAX_WORDS) || [],
   );
+
   const lastUpdateTimeRef = useRef(performance.now());
+  const renderTextOnlyRef = useRef(false);
+  const lastTextRenderTimeRef = useRef(performance.now());
   const timerRef = useRef<NodeJS.Timeout>();
 
   function onNewFireData(
@@ -57,14 +61,35 @@ export default function Home() {
     dataHeight: number,
     contentWidth: number,
     contentHeight: number,
+    source: string,
   ) {
-    setNewFireData({
-      data,
-      dataWidth: dataWidth,
-      dataHeight: dataHeight,
-      contentWidth: contentWidth,
-      contentHeight: contentHeight,
-    });
+    if (source === "text") {
+      if (!renderTextOnlyRef.current) {
+        lastTextRenderTimeRef.current = performance.now();
+      }
+      renderTextOnlyRef.current = true;
+    }
+
+    if (
+      (source === "text" && renderTextOnlyRef.current) ||
+      (!(source === "text") && !renderTextOnlyRef.current) ||
+      !renderJack
+    ) {
+      setNewFireData({
+        data,
+        dataWidth: dataWidth,
+        dataHeight: dataHeight,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
+      });
+    }
+
+    if (
+      renderTextOnlyRef.current &&
+      lastTextRenderTimeRef.current + 18 <= performance.now()
+    ) {
+      renderTextOnlyRef.current = false;
+    }
   }
 
   useEffect(() => {
