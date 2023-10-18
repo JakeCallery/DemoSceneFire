@@ -163,8 +163,8 @@ export default function Home() {
         />
       </div>
       <p className="mt-5">
-        <span className="font-bold">Pro Tip</span>: Copy link to send message
-        and configuration to friends
+        <span className="font-bold">Pro Tip</span>: Copy and paste link in
+        address bar to send message and configuration to friends
       </p>
       <div className="divider before:bg-base-50 after:bg-base-50" />
       <div className="mt-2">
