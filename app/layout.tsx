@@ -8,11 +8,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   metadataBase: new URL("https://fire.jakecallery.com"),
   title: "Fire by Jake Callery",
-  description: "My take on a demo scene fire effect from back in the day.",
+  description: "My take on a demoscene fire effect from back in the day.",
   creator: "Jake Callery",
   openGraph: {
     title: "Fire By Jake Callery",
-    description: "My take on a demo scene fire effect from back in the day.",
+    description: "My take on a demoscene fire effect from back in the day.",
     url: "https://fire.jakecallery.com",
     siteName: "Fire by Jake Callery",
     images: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Fire by Jake Callery",
-    description: "My take on a demo scene fire effect from back in the day.",
+    description: "My take on a demoscene fire effect from back in the day.",
     creator: "@jakecallery",
     images: ["https://fire.jakecallery.com/fireOpenGraphImage.png"],
   },

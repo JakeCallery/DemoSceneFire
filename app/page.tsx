@@ -138,7 +138,7 @@ export default function Home() {
 
       <div className="mt-5">
         <p className="font-bold text-2xl">Experiment:</p>
-        <p>My take on the old school demo scene fire effect</p>
+        <p>My take on the old school demoscene fire effect</p>
         <a
           className="text-secondary"
           href="https://github.com/JakeCallery/DemoSceneFire"
